@@ -222,9 +222,9 @@ dns:
 #代理组通用配置
 group-anchors:
   status: &status 
-    {<<: *url, timeout: 8000, disable-udp: false}
+    {<<: *url, timeout: 8000}
   status-auto: &status-auto 
-    {<<: *url, timeout: 3000, hidden: true, disable-udp: false}
+    {<<: *url, timeout: 3000, hidden: true}
 
   select: &select 
     {type: select, interval: 3600, <<: *status}
@@ -268,14 +268,10 @@ proxy-groups:
     exclude-filter: "sanliu"
     <<: *lb-round
 
-  - name: auto-美国-gm
+  - name: auto-美国
     include-all-providers: true
-    filter: "gm.*(美国|US|United).*"
-    <<: *lb
-
-  - name: auto-美国-ap
-    include-all-providers: true
-    filter: "ap.*(美国|US|United).*"
+    filter: "美国|US|United"
+    exclude-filter: "sanliu"
     <<: *lb
 
   - name: sanliu-备用
@@ -353,12 +349,6 @@ proxy-groups:
       - auto-新加坡-gm
       - auto-新加坡-ap
       - REJECT
-    <<: *select
-
-  - name: auto-美国
-    proxies:
-      - auto-美国-gm
-      - auto-美国-ap
     <<: *select
 
   - name: store_dl
