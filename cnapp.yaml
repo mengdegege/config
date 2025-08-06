@@ -1,67 +1,67 @@
 payload:
   # 📦 网盘类
-  - com.baidu.netdisk           # 百度网盘
-  - com.alicloud.databox        # 阿里云盘
-  - com.cn21.ecloud             # 天翼云盘
-  - com.xunlei.downloadprovider # 迅雷
+  - PROCESS-NAME,com.baidu.netdisk           # 百度网盘
+  - PROCESS-NAME,com.alicloud.databox        # 阿里云盘
+  - PROCESS-NAME,com.cn21.ecloud             # 天翼云盘
+  - PROCESS-NAME,com.xunlei.downloadprovider # 迅雷
 
   # 🎬 视频类
-  - com.qiyi.video              # 爱奇艺
-  - com.tencent.qqlive          # 腾讯视频
-  - com.youku.phone             # 优酷
-  - tv.danmaku.bili             # 哔哩哔哩
-  - com.kugou.android           # 酷狗音乐
-  - com.mgtv.tvphone            # 芒果TV
-  - com.letv.androidclient      # 乐视视频
+  - PROCESS-NAME,com.qiyi.video              # 爱奇艺
+  - PROCESS-NAME,com.tencent.qqlive          # 腾讯视频
+  - PROCESS-NAME,com.youku.phone             # 优酷
+  - PROCESS-NAME,tv.danmaku.bili             # 哔哩哔哩
+  - PROCESS-NAME,com.kugou.android           # 酷狗音乐
+  - PROCESS-NAME,com.mgtv.tvphone            # 芒果TV
+  - PROCESS-NAME,com.letv.androidclient      # 乐视视频
 
   # 🛒 购物类
-  - com.taobao.taobao           # 淘宝
-  - com.jingdong.app.mall       # 京东
-  - com.xunmeng.pinduoduo       # 拼多多
-  - com.xingin.xhs              # 小红书
-  - com.suning.mobile.ebuy      # 苏宁易购
-  - com.vipshop.vsworld         # 唯品会
-  - com.taobao.idlefish         # 闲鱼
+  - PROCESS-NAME,com.taobao.taobao           # 淘宝
+  - PROCESS-NAME,com.jingdong.app.mall       # 京东
+  - PROCESS-NAME,com.xunmeng.pinduoduo       # 拼多多
+  - PROCESS-NAME,com.xingin.xhs              # 小红书
+  - PROCESS-NAME,com.suning.mobile.ebuy      # 苏宁易购
+  - PROCESS-NAME,com.vipshop.vsworld         # 唯品会
+  - PROCESS-NAME,com.taobao.idlefish         # 闲鱼
 
   # 🗺️ 地图类
-  - com.autonavi.minimap        # 高德地图
-  - com.baidu.BaiduMap          # 百度地图
-  - com.tencent.map             # 腾讯地图
+  - PROCESS-NAME,com.autonavi.minimap        # 高德地图
+  - PROCESS-NAME,com.baidu.BaiduMap          # 百度地图
+  - PROCESS-NAME,com.tencent.map             # 腾讯地图
 
   # 💬 社交类
-  - com.tencent.mm              # 微信
-  - com.tencent.mobileqq        # QQ
-  - com.sina.weibo              # 微博
-  - com.ss.android.ugc.aweme    # 抖音
-  - com.kuaishou.nebula         # 快手
-  - com.zhihu.android           # 知乎
+  - PROCESS-NAME,com.tencent.mm              # 微信
+  - PROCESS-NAME,com.tencent.mobileqq        # QQ
+  - PROCESS-NAME,com.sina.weibo              # 微博
+  - PROCESS-NAME,com.ss.android.ugc.aweme    # 抖音
+  - PROCESS-NAME,com.kuaishou.nebula         # 快手
+  - PROCESS-NAME,com.zhihu.android           # 知乎
 
   # 💼 办公类
-  - com.alibaba.android.rimet   # 钉钉
-  - com.tencent.wework          # 企业微信
-  - com.bytedance.lark          # 飞书
+  - PROCESS-NAME,com.alibaba.android.rimet   # 钉钉
+  - PROCESS-NAME,com.tencent.wework          # 企业微信
+  - PROCESS-NAME,com.bytedance.lark          # 飞书
 
   # 📚 阅读类
-  - com.chaozh.iReaderFree      # 掌阅
-  - com.migu.reader             # 咪咕阅读
-  - com.tencent.weread          # 微信读书
+  - PROCESS-NAME,com.chaozh.iReaderFree      # 掌阅
+  - PROCESS-NAME,com.migu.reader             # 咪咕阅读
+  - PROCESS-NAME,com.tencent.weread          # 微信读书
 
   # 📰 新闻类（广告密集）
-  - com.ss.android.article.news # 今日头条
-  - com.netease.newsreader.activity # 网易新闻
-  - cn.com.chinatelecom.news    # 天翼新闻
-  - com.sohu.newsclient         # 搜狐新闻
-  - com.ifeng.news2             # 凤凰新闻
-  - com.yidian.xiaomi           # 一点资讯
-  - com.myzaker.ZAKER_Phone     # ZAKER
-  - com.tencent.news            # 腾讯新闻
-  - com.baidu.news              # 百度新闻
-  - com.hexin.plat.android      # 和讯网
-  - com.cctvnews.newsreader     # 央视新闻
+  - PROCESS-NAME,com.ss.android.article.news # 今日头条
+  - PROCESS-NAME,com.netease.newsreader.activity # 网易新闻
+  - PROCESS-NAME,cn.com.chinatelecom.news    # 天翼新闻
+  - PROCESS-NAME,com.sohu.newsclient         # 搜狐新闻
+  - PROCESS-NAME,com.ifeng.news2             # 凤凰新闻
+  - PROCESS-NAME,com.yidian.xiaomi           # 一点资讯
+  - PROCESS-NAME,com.myzaker.ZAKER_Phone     # ZAKER
+  - PROCESS-NAME,com.tencent.news            # 腾讯新闻
+  - PROCESS-NAME,com.baidu.news              # 百度新闻
+  - PROCESS-NAME,com.hexin.plat.android      # 和讯网
+  - PROCESS-NAME,com.cctvnews.newsreader     # 央视新闻
 
   # 📂 其他工具类
-  - com.eg.android.AlipayGphone # 支付宝
-  - com.MobileTicket            # 12306
-  - ctrip.android.view          # 携程
-  - com.meituan.android         # 美团
-  - com.dianping.v1             # 大众点评
+  - PROCESS-NAME,com.eg.android.AlipayGphone # 支付宝
+  - PROCESS-NAME,com.MobileTicket            # 12306
+  - PROCESS-NAME,ctrip.android.view          # 携程
+  - PROCESS-NAME,com.meituan.android         # 美团
+  - PROCESS-NAME,com.dianping.v1             # 大众点评
