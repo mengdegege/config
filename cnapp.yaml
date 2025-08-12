@@ -65,3 +65,4 @@ payload:
   - PROCESS-NAME,ctrip.android.view          # 携程
   - PROCESS-NAME,com.meituan.android         # 美团
   - PROCESS-NAME,com.dianping.v1             # 大众点评
+  - PROCESS-PATH-REGEX,(?i).*(WXWork|Weixin|Tencent|todesk|Oray)
