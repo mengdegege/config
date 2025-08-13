@@ -9,7 +9,7 @@ gene-anchors:
   v6: &ipv6
     ipv6: true
 
-#---订阅配置---
+#---订阅基础配置---
 sub-based-anchors:
   sub-based: &subbased
     type: http
@@ -474,7 +474,7 @@ rule-providers:
     path: ./rules/cnapp.yaml
     url: "https://raw.githubusercontent.com/mengdegege/config/refs/heads/main/cnapp.yaml"
 ### inline set ###
-  others:
+  others:  #dddd
     type: inline
     behavior: classical
     payload:
@@ -483,7 +483,7 @@ rule-providers:
       - DOMAIN-KEYWORD,xvv1deos
       - DOMAIN-SUFFIX,sagernet.org
 
-  common:
+  corp:
     type: inline
     behavior: classical
     payload:
@@ -494,7 +494,7 @@ rule-providers:
       - DOMAIN-SUFFIX,xinheyun.com
       - DOMAIN-SUFFIX,edu
       - DOMAIN-SUFFIX,gov.cn
-  dom-dns:
+  common-dns:
     type: inline
     behavior: classical
     payload:
@@ -504,7 +504,7 @@ rule-providers:
       - DOMAIN,dns.pub
       - DOMAIN,dns.onedns.net
       - DOMAIN,public1.114dns.com
-      #- DOMAIN-REGEX,^(?!.*(google|g.|bing|apple|microsoft|git|static)).+cn$
+
   cdn-filter:
     type: inline
     behavior: classical
@@ -578,7 +578,7 @@ rules:
   - RULE-SET,geolocation-cn,DIRECT
   - OR,((RULE-SET,bahamut),(RULE-SET,gfw),(RULE-SET,others)),gfw
 # final
-  - RULE-SET,common,DIRECT
+  - RULE-SET,corp,DIRECT
   - RULE-SET,cnapp,DIRECT
   - RULE-SET,cn_ip,DIRECT
   - MATCH,last-stand
