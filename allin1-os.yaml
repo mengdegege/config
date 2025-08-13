@@ -1,0 +1,601 @@
+#---通用锚点---
+gene-anchors:
+  # 测试URL
+  health: &check
+    url: "https://www.gstatic.com/generate_204"
+    interval: 3600
+    timeout: 5000
+  # IPv6开关
+  v6: &ipv6
+    ipv6: true
+
+#---订阅配置---
+sub-based-anchors:
+  sub-based: &subbased
+    type: http
+    interval: 86400
+    #proxy: "sub_dl"
+    #exclude-filter: "(?i).*(节点|群组|官网|set|Date|屬於|属于|TG|检查|GB|订阅|到期|流量|Date|Reset)"
+    #filter: "(?i).*(CN|香港|Hong Kong|台湾|Taiwan|新加坡|Singapore|美国|US|Oregon|United|日本|東京都|JP|Japan|剩余|到期|套餐|官网|更新|GB|Date)"
+    health-check:
+      enable: true
+      <<: *check
+# 订阅资源 header: {authentication: ["t=xxx"]}
+  sub1: &sub1 
+    url: "https://sub1.url"
+    path: ./proxies/store1.yaml
+    <<: *subbased
+  sub2: &sub2 
+    url: "http://sub2.url"
+    path: ./proxies/store3.yaml
+    <<: *storebased
+  sub3: &sub3 
+    url: "https://sub3.url"
+    path: ./proxies/store2.yaml
+    <<: *subbased
+
+proxy-providers:
+  pref:
+    <<: *sub1
+    filter: "(?i).*(hong kong|taiwan|singapore|united|japan)"
+    #exclude-filter: "GB|流量|官网|到期|订阅"
+    override:
+      additional-prefix: "@pref | "
+
+  bak:
+    <<: *sub2
+    filter: "(?i).*((官网|到期)|(transit).*移动线路2)"
+    override:
+      additional-prefix: "bak | "
+
+  free:
+    <<: *sub3
+    filter: "(?i)^.{0,3}CN"
+    override:
+      additional-prefix: "free | "
+
+####################### Profile Enhancement Merge Template for Clash Verge ##############################
+#---侦听配置---
+#mixed-port: 7890
+#tun 配置
+tun:
+  enable: true
+  device: utun001
+  stack: system
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+  auto-route: true
+  strict-route: true
+  auto-detect-interface: true
+
+#全局配置
+<<: *ipv6
+mode: rule
+find-process-mode: strict
+log-level: debug
+unified-delay: true
+tcp-concurrent: true
+profile:
+    store-selected: true
+    store-fake-ip: true
+global-client-fingerprint: chrome
+
+#---外部控制---
+##-------从浏览器控制台下载控制界面的代码----------------------------
+##fetch("http://127.0.0.1:9090/upgrade/ui", {
+##  method: "POST",
+##  headers: {
+##    "Authorization": "Bearer your-secret"  // 如果你有设置 secret可以省略这行
+##  }
+##})
+##  .then(res => res.text())
+##  .then(console.log)
+##-----------------------------------------------------------------
+#external-controller: 192.168.1.1:9090
+#external-controller-tls: 192.168.1.1:9443
+#secret: "mihomo"
+#external-ui: ./ui
+#external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist-cdn-fonts.zip"
+#tls:    # 证书CN:  *.localtonet.com,*.localto.net,192.168.88.*
+#  certificate: |-
+#    -----BEGIN CERTIFICATE-----
+#    证书，每行对齐
+#    -----END CERTIFICATE-----
+
+#  private-key: |-
+#    -----BEGIN PRIVATE KEY-----
+#    私钥，每行对齐
+#    -----END PRIVATE KEY-----
+
+
+#---geodata配置---
+geodata-mode: false
+geodata-loader: memconservative
+#geox-url:
+  #geoip: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip-lite.dat"
+  #geosite: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  #mmdb: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country-lite.mmdb"
+#geo-auto-update: true
+#geo-update-interval: 72
+
+#---ntp 配置---用于某些需要时间同步的协议
+ntp:
+  enable: true
+#  # 是否同步至系统时间，需要 root/管理员权限
+  write-to-system: false
+  server: time.apple.com
+  port: 123
+  interval: 60
+
+# --- DNS 域名解析配置 ---
+# hosts
+hosts:
+  dns.alidns.com: [223.5.5.5]
+  dot.pub: [1.12.12.12]
+  doh.pub: [1.12.12.12]
+  dns.onedns.net: [52.80.248.44]
+  #one.one.one.one: [1.0.0.1, 1.1.1.1]
+  dns.google: [8.8.8.8, 8.8.4.4]
+  cn.bing.com: a-0001.a-msedge.net
+  +.bing.cn: a-0001.a-msedge.net
+  #china.bing123.com: www.bing.com
+
+dns:
+  enable: true
+  #listen: 127.0.0.1:1053
+  <<: *ipv6
+  prefer-h3: true
+  respect-rules: false
+  use-hosts: true
+  default-nameserver:
+    - 114.114.114.114
+  proxy-server-nameserver:
+    #- 'http://dns.alidns.com/dns-query#h3=true'
+    - 'tls://dot.onedns.net'
+    - 'tls://dot.pub'
+  direct-nameserver:
+    #- 114.114.114.114
+    #- 119.29.29.29
+    - 'quic://dns.alidns.com'
+    - 'tls://dot.onedns.net'
+    - 'tls://dot.pub'
+  nameserver:
+    - 'quic://dns.alidns.com'
+    - 'tls://dot.onedns.net'
+    - 'tls://dot.pub'
+    #- https://dns.google/dns-query#last-stand
+  nameserver-policy:
+    'rule-set:google,riot': ['https://dns.google/dns-query#google']
+    'rule-set:spotify': ['https://dns.google/dns-query#spotify']
+    'rule-set:netflix': ['https://dns.google/dns-query#netflix']
+    'rule-set:disney,hbo,hulu': ['https://dns.google/dns-query#media']
+    'rule-set:copilot+ip': ['https://dns.google/dns-query#bing']
+    'rule-set:bing,github': ['https://dns.google/dns-query#bing']
+    'rule-set:microsoft': ['https://dns.google/dns-query#bing']
+    'rule-set:apple': ['https://dns.google/dns-query#apple']
+    'rule-set:others': ['https://dns.google/dns-query#gfw']
+    'rule-set:gfw,bahamut': ['https://dns.google/dns-query#gfw']
+
+  #  DNS 增强
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  #fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+
+
+#---代理配置---
+
+#代理组通用锚点
+group-anchors:
+  select: &app
+    {type: select, <<: *check}
+  fallback: &fallback
+    {type: fallback, <<: *check}
+  urltest: &g-base
+    {type: url-test, tolerance: 10, interval: 2500, hidden: true}
+
+#代理组
+proxy-groups:
+
+  - name: last-stand
+    <<: *fallback
+    interval: 1800
+    timeout: 10000
+    proxies:
+      - hk-pref
+      - sg-pref
+      - us-pref
+      - tw-pref
+      - jp-pref
+      - bak
+      - free
+
+  - name: youtube
+    proxies:
+      - REJECT
+      - PASS
+    <<: *app
+
+  - name: google
+    proxies:
+      - us-pref
+      - sg-pref
+      - hk-pref
+    <<: *app
+
+  - name: bing
+    proxies:
+      - hk-pref
+      - tw-pref
+      - sg-pref
+      - last-stand
+    <<: *app
+    #url: https://www.msftconnecttest.com/connecttest.txt
+
+  - name: media
+    proxies:
+      - sg-pref
+    <<: *app
+    #include-all-providers: true
+    #filter: "新加坡|Singapore"
+    #exclude-filter: "^@pref"
+
+  - name: netflix
+    include-all-providers: true
+    filter: "(?i)^@pref.*(新加坡|Singapore)"
+    <<: *app
+    proxies: 
+      - media
+
+  - name: spotify
+    proxies:
+      - hk-pref
+      - sg-pref
+    <<: *app
+   
+  - name: apple
+    proxies:
+      - us-pref
+      - DIRECT
+    <<: *app
+    url: 'https://www.apple.com/library/test/success.html'
+
+  - name: gfw
+    proxies:
+      - tw-pref
+      - jp-pref
+      - last-stand
+    <<: *fallback
+
+  #- name: sub_dl
+  #  proxies:
+  #    - DIRECT
+  #    - gfw
+  #  <<: *select
+  #  interval: 7200
+  #  url: 'https://sub.xeton.dev'
+
+  - name: res_dl
+    proxies:
+      - DIRECT
+      - gfw
+    url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/master/resouces/direct.txt'
+    interval: 7200
+    #expected-status: 200/302/400-503
+    <<: *fallback
+
+  - name: tv&game
+    interval: 0
+    proxies:
+      - audit
+      - PASS
+    <<: *app
+
+  - name: streamer
+    interval: 0
+    proxies:
+      - audit
+      - PASS
+    <<: *app
+
+  - name: audit
+    interval: 0
+    proxies:
+      - PASS
+      - REJECT
+    <<: *app
+
+###### 底层筛选 ###
+  - name: hk-pref
+    proxies:
+      #- REJECT
+    filter: "(?i)^@pref.*(香港|Hong Kong)"
+    include-all-providers: true
+    <<: *g-base
+
+  - name: us-pref
+    proxies:
+      #- REJECT
+    filter: "(?i)^@pref.*(美国|US|United)"
+    include-all-providers: true
+    <<: *g-base
+    
+  - name: sg-pref
+    proxies:
+      #- REJECT
+    filter: "(?i)^@pref.*(新加坡|Singapore)"
+    include-all-providers: true
+    <<: *g-base
+    
+  - name: tw-pref
+    filter: "(?i)^@pref.*(台湾|Taiwan)"
+    include-all-providers: true
+    <<: *g-base
+
+  - name: jp-pref
+    filter: "(?i)^@pref.*(JP|Japan)"
+    include-all-providers: true
+    <<: *g-base
+
+  - name: free
+    hidden: false
+    exclude-filter: "(?i)^(@pref |bak )"
+    #filter: "(?i)^free.{0,7}CN"
+    include-all-providers: true
+    <<: *g-base
+
+  - name: "bak"
+    hidden: false
+    exclude-filter: "(?i)^(@pref |free )"
+    include-all-providers: true
+    <<: *g-base
+######
+
+#规则集通用配置
+rule-anchors:
+  rp-classical: &classical-yaml 
+    {type: http, interval: 86400, behavior: classical, format: yaml, proxy: res_dl}
+  ip-yaml: &ip-yaml 
+    {type: http, interval: 86400, behavior: ipcidr, format: yaml, proxy: res_dl}
+  ip-mrs: &ip-mrs
+    {type: http, interval: 86400, behavior: ipcidr, format: mrs, proxy: res_dl}
+  domain-mrs: &domain-mrs
+    {type: http, interval: 86400, behavior: domain, format: mrs, proxy: res_dl}
+
+
+#规则集
+rule-providers:
+### domain-offical
+  #cn:
+  #  <<: *domain-mrs
+  #  path: ./rules/cn.mrs
+  #  url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/cn.mrs"
+  #  #url: "https://raw.githubusercontent.com/mengdegege/meta-rules-dat/refs/heads/meta/geo/geosite/cn.list"
+  geolocation-cn:
+    <<: *domain-mrs
+    path: ./rules/geolocation-!cn.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/geolocation-cn.mrs"
+  gfw:
+    <<: *domain-mrs
+    path: ./rules/gfw.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/gfw.mrs"
+  bahamut:
+    <<: *domain-mrs
+    path: ./rules/bahamut.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/bahamut.mrs"
+  github:
+    <<: *domain-mrs
+    path: ./rules/github.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/github.mrs"
+  bing:
+    <<: *domain-mrs
+    path: ./rules/bing.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/bing.mrs"
+  youtube:
+    <<: *domain-mrs
+    path: ./rules/youtube.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/youtube.mrs"
+  google-cn:
+    <<: *domain-mrs
+    path: ./rules/google.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/google-cn.mrs"
+  google:
+    <<: *domain-mrs
+    path: ./rules/google-cn.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/google.mrs"
+  googlefcm:
+    <<: *domain-mrs
+    path: ./rules/googlefcm.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/googlefcm.mrs"
+  netflix:
+    <<: *domain-mrs
+    path: ./rules/netflix.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/netflix.mrs"
+  disney:
+    <<: *domain-mrs
+    path: ./rules/disney.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/disney.mrs"
+  hbo:
+    <<: *domain-mrs
+    path: ./rules/hbo.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/hbo.mrs"
+  hulu:
+    <<: *domain-mrs
+    path: ./rules/hulu.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/hulu.mrs"
+  spotify:
+    <<: *domain-mrs
+    path: ./rules/spotify.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/spotify.mrs"
+  apple-cn:
+    <<: *domain-mrs
+    path: ./rules/apple-cn.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/apple-cn.mrs"
+  apple:
+    <<: *domain-mrs
+    path: ./rules/apple.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/apple.mrs"
+  category-ads-all:
+    <<: *domain-mrs
+    path: ./rules/ads.mrs
+    #url: "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/refs/heads/main/Filters/AWAvenue-Ads-Rule-Clash.mrs"
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/category-ads-all.mrs"
+  microsoft@cn:
+    <<: *domain-mrs
+    path: ./rules/microsoft@cn.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/microsoft@cn.mrs"
+  microsoft:
+    <<: *domain-mrs
+    path: ./rules/microsoft.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/microsoft.mrs"
+  riot:
+    <<: *domain-mrs
+    path: ./rules/riot.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/riot.mrs"
+
+### IP
+  private:
+    <<: *ip-mrs
+    path: ./rules/private_ip.mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geoip/private.mrs"
+
+### customer ###
+  cn_ip:
+    <<: *ip-yaml
+    path: ./rules/cn_ip.yaml
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml"
+  copilot+ip:
+    <<: *classical-yaml
+    path: ./rules/copilot+ip.yaml
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Copilot/Copilot_No_Resolve.yaml"
+  cnapp:
+    <<: *classical-yaml
+    path: ./rules/cnapp.yaml
+    url: "https://raw.githubusercontent.com/mengdegege/config/refs/heads/main/cnapp.yaml"
+### inline set ###
+  others:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-KEYWORD,porn
+      - DOMAIN-KEYWORD,xvideos
+      - DOMAIN-KEYWORD,xvv1deos
+      - DOMAIN-SUFFIX,sagernet.org
+
+  common:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-SUFFIX,looyet.com
+      - DOMAIN-SUFFIX,lmtechpaas.com
+      - DOMAIN-SUFFIX,hytechpass.com
+      - DOMAIN-SUFFIX,zbintel.com
+      - DOMAIN-SUFFIX,xinheyun.com
+      - DOMAIN-SUFFIX,edu
+      - DOMAIN-SUFFIX,gov.cn
+  dom-dns:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN,dns.alidns.com
+      - DOMAIN,dot.pub
+      - DOMAIN,doh.pub
+      - DOMAIN,dns.pub
+      - DOMAIN,dns.onedns.net
+      - DOMAIN,public1.114dns.com
+      #- DOMAIN-REGEX,^(?!.*(google|g.|bing|apple|microsoft|git|static)).+cn$
+  cdn-filter:
+    type: inline
+    behavior: classical
+    payload:
+      - DOMAIN-KEYWORD,img
+      - DOMAIN-KEYWORD,image
+      - DOMAIN-KEYWORD,pic
+      - DOMAIN-KEYWORD,cache
+      - DOMAIN-KEYWORD,usercontent
+      - DOMAIN-KEYWORD,photo
+      - DOMAIN-KEYWORD,gallery
+      - DOMAIN-KEYWORD,cdn
+      - DOMAIN-KEYWORD,box
+      - DOMAIN-KEYWORD,fast
+      - DOMAIN-KEYWORD,data
+      - DOMAIN-KEYWORD,font
+      - DOMAIN-REGEX,^(?!.*gstatic).*static.*
+      - DOMAIN-REGEX,^(?!.*msedge).*edge.*
+
+  ads-remit:
+    behavior: classical
+    type: inline
+    payload:
+      - PROCESS-NAME-REGEX,(?i)^com\.(google\.|android\.)(?!.*(uid\.shared|youtube|webview|chrome|gsf)).*
+
+  tv&game:
+    behavior: classical
+    type: inline
+    payload:
+      - DOMAIN-KEYWORD,poki
+      - PROCESS-NAME-REGEX,(?i).*youtube\.tv
+      - PROCESS-NAME-REGEX,(?i).*android\.(tv$|videos)
+      #- PROCESS-NAME-REGEX,(?i).*tvlauncher
+      - PROCESS-NAME-REGEX,(?i).*tvbox
+
+  streamer:
+    behavior: classical
+    type: inline
+    payload:
+      - PROCESS-NAME-REGEX,(?i).*netflix
+      - PROCESS-NAME-REGEX,(?i).*disney
+      - PROCESS-NAME-REGEX,(?i).*amazon
+      - PROCESS-NAME-REGEX,(?i).*hbo
+      - PROCESS-NAME-REGEX,(?i).*max
+      - PROCESS-NAME-REGEX,(?i).*wbs\.stream
+
+### 规则 ###
+rules:
+# 基础应用
+  - RULE-SET,private,DIRECT,no-resolve
+  - RULE-SET,googlefcm,google
+  - SUB-RULE,(RULE-SET,category-ads-all),ads
+  - RULE-SET,apple-cn,DIRECT
+  - SUB-RULE,(RULE-SET,apple),apple
+  - RULE-SET,github,last-stand
+  - RULE-SET,copilot+ip,bing
+  - RULE-SET,bing,bing
+  - RULE-SET,spotify,spotify
+#.TV审计
+  - RULE-SET,tv&game,tv&game
+  - RULE-SET,streamer,streamer
+# 流媒体
+  - RULE-SET,netflix,netflix
+  - OR,((RULE-SET,disney),(RULE-SET,hbo),(RULE-SET,hulu)),media
+  - PROCESS-NAME,com.google.android.youtube.tv,youtube
+# 网络服务
+  - SUB-RULE,(RULE-SET,google-cn),google-cn
+  - OR,((RULE-SET,google),(RULE-SET,riot)),google
+  - SUB-RULE,(RULE-SET,microsoft@cn),ms@cn
+  - RULE-SET,microsoft,bing
+  - RULE-SET,geolocation-cn,DIRECT
+  - OR,((RULE-SET,bahamut),(RULE-SET,gfw),(RULE-SET,others)),gfw
+# final
+  - RULE-SET,common,DIRECT
+  - RULE-SET,cnapp,DIRECT
+  - RULE-SET,cn_ip,DIRECT
+  - MATCH,last-stand
+
+sub-rules:
+  ads:
+    - RULE-SET,ads-remit,PASS
+    - MATCH,REJECT
+
+  apple:
+    - PROCESS-NAME,com.apple.android.music,DIRECT
+    - MATCH,apple
+
+  google-cn:
+    - RULE-SET,cdn-filter,DIRECT
+
+  ms@cn:
+    - PROCESS-NAME,svchost.exe,DIRECT
+    - PROCESS-NAME,OneDrive.exe,DIRECT
+    - PROCESS-NAME,PhoneExperienceHost.exe,DIRECT
