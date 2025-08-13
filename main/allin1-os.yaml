@@ -1,5 +1,5 @@
 #---通用锚点---
-gene-anchors:
+gen-anchors:
   # 测试URL
   health: &check
     url: "https://www.gstatic.com/generate_204"
