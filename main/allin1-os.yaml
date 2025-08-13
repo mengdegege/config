@@ -30,7 +30,7 @@ sub-based-anchors:
     path: ./proxies/store2.yaml
     <<: *subbased
   sub3: &sub3 
-    url: "https://fs.v2rayse.com/share/20250612/ag2igx13z7.yaml"
+    url: "https://sub3.url"
     path: ./proxies/store3.yaml
     <<: *subbased
 
@@ -94,10 +94,10 @@ global-client-fingerprint: chrome
 ##-----------------------------------------------------------------
 external-controller: 127.0.0.1:9090
 #external-controller-tls: 127.0.0.1:9443
-#secret: "mihomo-_123wsx"
+#secret: "mihomo"
 #external-ui: ./ui
 #external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist-cdn-fonts.zip"
-tls:    # 证书CN:  *.localtonet.com,*.localto.net,192.168.88.*
+tls:    # 证书
   certificate: |-
     -----BEGIN CERTIFICATE-----
     #证书,对齐
@@ -121,13 +121,13 @@ geodata-loader: memconservative
 #---ntp 配置---用于某些需要时间同步的协议
 ntp:
   enable: true
-#  # 是否同步至系统时间，需要 root/管理员权限
+# 是否同步至系统时间，需要 root/管理员权限
   write-to-system: false
   server: time.apple.com
   port: 123
   interval: 60
 
-# --- DNS 域名解析配置 ---
+# --- 域名解析 ---
 # hosts
 hosts:
   dns.alidns.com: [223.5.5.5]
@@ -185,7 +185,7 @@ dns:
 
 
 #---代理配置---
-
+proxies:
 #代理组通用锚点
 group-anchors:
   select: &app
@@ -306,7 +306,7 @@ proxy-groups:
       - REJECT
     <<: *app
 
-###### 底层筛选 ###
+###### 区域筛选 ###
   - name: hk-pref
     proxies:
       #- REJECT
@@ -459,12 +459,11 @@ rule-providers:
     <<: *ip-mrs
     path: ./rules/private_ip.mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geoip/private.mrs"
-
-### customer ###
   cn_ip:
     <<: *ip-yaml
     path: ./rules/cn_ip.yaml
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml"
+### customer ###
   copilot+ip:
     <<: *classical-yaml
     path: ./rules/copilot+ip.yaml
@@ -472,29 +471,9 @@ rule-providers:
   cnapp:
     <<: *classical-yaml
     path: ./rules/cnapp.yaml
-    url: "https://raw.githubusercontent.com/mengdegege/config/refs/heads/main/rules/cnapp.yaml?token=GHSAT0AAAAAADILK36FF4VPS3ZH7BCEHBNK2E35D3Q"
-### inline set ###
-  others: #dddd
-    type: inline
-    behavior: classical
-    payload:
-      - DOMAIN-KEYWORD,porn
-      - DOMAIN-KEYWORD,xvideos
-      - DOMAIN-KEYWORD,xvv1deos
-      - DOMAIN-SUFFIX,sagernet.org
-
-  common:
-    type: inline
-    behavior: classical
-    payload:
-      - DOMAIN-SUFFIX,looyet.com
-      - DOMAIN-SUFFIX,lmtechpaas.com
-      - DOMAIN-SUFFIX,hytechpass.com
-      - DOMAIN-SUFFIX,zbintel.com
-      - DOMAIN-SUFFIX,xinheyun.com
-      - DOMAIN-SUFFIX,edu
-      - DOMAIN-SUFFIX,gov.cn
-  dom-dns:
+    url: "https://raw.githubusercontent.com/mengdegege/config/refs/heads/main/rules/cnapp.yaml"
+### inline ###
+  dom-dns: 
     type: inline
     behavior: classical
     payload:
@@ -553,7 +532,7 @@ rule-providers:
 
 ### 规则 ###
 rules:
-# 基础应用
+# 必~须~滴~
   - RULE-SET,private,DIRECT,no-resolve
   - RULE-SET,googlefcm,google
   - SUB-RULE,(RULE-SET,category-ads-all),ads
@@ -563,7 +542,7 @@ rules:
   - RULE-SET,copilot+ip,bing
   - RULE-SET,bing,bing
   - RULE-SET,spotify,spotify
-#.TV审计
+# 控制一下吧
   - RULE-SET,tv&game,tv&game
   - RULE-SET,streamer,streamer
 # 流媒体
@@ -578,7 +557,6 @@ rules:
   - RULE-SET,geolocation-cn,DIRECT
   - OR,((RULE-SET,bahamut),(RULE-SET,gfw),(RULE-SET,others)),gfw
 # final
-  - RULE-SET,common,DIRECT
   - RULE-SET,cnapp,DIRECT
   - RULE-SET,cn_ip,DIRECT
   - MATCH,last-stand
