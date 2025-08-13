@@ -574,3 +574,4 @@ sub-rules:
     - PROCESS-NAME,svchost.exe,DIRECT
     - PROCESS-NAME,OneDrive.exe,DIRECT
     - PROCESS-NAME,PhoneExperienceHost.exe,DIRECT
+    - PROCESS-NAME,MpDefenderCoreService.exe,DIRECT
