@@ -165,7 +165,7 @@ dns:
     - 'tls://dot.onedns.net'
     - 'tls://dot.pub'
     #- https://dns.google/dns-query#last-stand
-  nameserver-policy:
+  nameserver-policy: #不知道有没有用,先写着
     'rule-set:google,riot': ['https://dns.google/dns-query#google']
     'rule-set:spotify': ['https://dns.google/dns-query#spotify']
     'rule-set:netflix': ['https://dns.google/dns-query#netflix']
@@ -174,7 +174,6 @@ dns:
     'rule-set:bing,github': ['https://dns.google/dns-query#bing']
     'rule-set:microsoft': ['https://dns.google/dns-query#bing']
     'rule-set:apple': ['https://dns.google/dns-query#apple']
-    'rule-set:others': ['https://dns.google/dns-query#gfw']
     'rule-set:gfw,bahamut': ['https://dns.google/dns-query#gfw']
 
   #  DNS 增强
@@ -186,18 +185,17 @@ dns:
 
 #---代理配置---
 proxies:
-#代理组通用锚点
+# 组公共配置
 group-anchors:
-  select: &app
+  apply: &app
     {type: select, <<: *check}
   fallback: &fallback
     {type: fallback, <<: *check}
   urltest: &g-base
     {type: url-test, tolerance: 10, interval: 2500, hidden: true}
 
-#代理组
+#代理组配置
 proxy-groups:
-
   - name: last-stand
     <<: *fallback
     interval: 1800
@@ -362,7 +360,6 @@ rule-anchors:
     {type: http, interval: 86400, behavior: ipcidr, format: mrs, proxy: res_dl}
   domain-mrs: &domain-mrs
     {type: http, interval: 86400, behavior: domain, format: mrs, proxy: res_dl}
-
 
 #规则集
 rule-providers:
@@ -555,7 +552,7 @@ rules:
   - SUB-RULE,(RULE-SET,microsoft@cn),ms@cn
   - RULE-SET,microsoft,bing
   - RULE-SET,geolocation-cn,DIRECT
-  - OR,((RULE-SET,bahamut),(RULE-SET,gfw),(RULE-SET,others)),gfw
+  - OR,((RULE-SET,bahamut),(RULE-SET,gfw)),gfw
 # final
   - RULE-SET,cnapp,DIRECT
   - RULE-SET,cn_ip,DIRECT
