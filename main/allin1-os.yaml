@@ -27,11 +27,11 @@ sub-based-anchors:
     <<: *subbased
   sub2: &sub2 
     url: "http://sub2.url"
-    path: ./proxies/store3.yaml
-    <<: *storebased
+    path: ./proxies/store2.yaml
+    <<: *subbased
   sub3: &sub3 
     url: "https://sub3.url"
-    path: ./proxies/store2.yaml
+    path: ./proxies/store3.yaml
     <<: *subbased
 
 proxy-providers:
