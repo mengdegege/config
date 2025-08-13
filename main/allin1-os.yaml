@@ -515,7 +515,7 @@ rule-providers:
   cnapp:
     <<: *classical-yaml
     path: ./rules/cnapp.yaml
-    url: "https://raw.githubusercontent.com/mengdegege/config/refs/heads/main/rules/cnapp.yaml"
+    url: "https://raw.githubusercontent.com/mengdegege/config/refs/heads/main/rules/cnapp.yaml?token=GHSAT0AAAAAADILK36FF4VPS3ZH7BCEHBNK2E35D3Q"
 ### inline set ###
   others: #dddd
     type: inline
